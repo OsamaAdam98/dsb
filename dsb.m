@@ -52,4 +52,4 @@ plot(Fs1, real(fftshift(fft(transCarrier))));
 title('DSB-TC');
 xlimit(-1, 1);
 
-
+%مساء الخير من قلب الورديان
