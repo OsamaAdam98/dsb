@@ -29,7 +29,7 @@ title('After Filter');
 %audiowrite('filteredSig.wav', real(ifft(filteredSig)), Fs);
 %filteredSig = real(ifft(filteredSig));
 
-%mse = sqrt(filteredSig - audio);
+mse = immse(filteredSig, audio);
 
 Fc = 100e3;
 message = resample(filteredSig, 5 * Fc, Fs);
@@ -77,6 +77,11 @@ title('Suppressed Carrier Envelope');
 subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(envelopeSC))));
 title('Suppressed Carrier Envelope Spectrum');
+
+test = envelopeTC - message;
+
+figure;
+plot(t, test);
 
 
 
