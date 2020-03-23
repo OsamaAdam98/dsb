@@ -41,8 +41,28 @@ C = cos(2*pi*Fc*t);
 A = 515*2;
 
 %DSB-SC
-ModuledSig = message.*transpose(C);
+ModuledSCSig = message.*transpose(C);
 figure; subplot(2,1,1);
-plot(t, ModuledSig);
-K = real(fftshift(fft(ModuledSig)));
+plot(t, ModuledSCSig);
+K = real(fftshift(fft(ModuledSCSig)));
 subplot(2,1,2); plot(Fs1, K);
+
+% DSB-TC
+
+message = message + (max(message) * 2);
+ModulatedTCSig = message .* transpose(C);
+
+figure;
+subplot(2, 1, 1);
+plot(t, ModulatedTCSig);
+title('DSB-TC Time Domain');
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(ModulatedTCSig))));
+title('DSB-TC Frequency Domain');
+
+
+
+
+
+
+
