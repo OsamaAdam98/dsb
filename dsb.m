@@ -38,13 +38,12 @@ s = length(message)/Fs;
 t = linspace(0, s, s*Fs);
 Fs1 = linspace(-Fs/2, Fs/2, s*Fs);
 C = cos(2*pi*Fc*t);
-A = 515*2;
 
 %DSB-SC
-ModuledSCSig = message.*transpose(C);
+ModulatedSCSig = message.*transpose(C);
 figure; subplot(2,1,1);
-plot(t, ModuledSCSig);
-K = real(fftshift(fft(ModuledSCSig)));
+plot(t, ModulatedSCSig);
+K = real(fftshift(fft(ModulatedSCSig)));
 subplot(2,1,2); plot(Fs1, K);
 
 % DSB-TC
@@ -60,7 +59,24 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(ModulatedTCSig))));
 title('DSB-TC Frequency Domain');
 
+envelopeTC = abs(hilbert(ModulatedTCSig));
+envelopeSC = abs(hilbert(ModulatedSCSig));
 
+figure;
+subplot(2, 1, 1);
+plot(t, envelopeTC);
+title('Transmitted Carrier Envelope');
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(envelopeTC))));
+title('Transmitted Carrier Envelope Spectrum');
+
+figure;
+subplot(2, 1, 1);
+plot(t, envelopeSC);
+title('Suppressed Carrier Envelope');
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(envelopeSC))));
+title('Suppressed Carrier Envelope Spectrum');
 
 
 
