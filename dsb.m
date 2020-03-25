@@ -38,19 +38,24 @@ Fs = 5*Fc;
 s = length(message)/Fs;
 t = linspace(0, s, s*Fs);
 Fs1 = linspace(-Fs/2, Fs/2, s*Fs);
-C = cos(2*pi*Fc*t);
+
+audiowrite('message.wav', message, Fs);
 
 % DSB-SC
-ModulatedSCSig = message.*transpose(C);
-figure; subplot(2,1,1);
+
+ModulatedSCSig = dsbSCMod(message, Fc, t);
+
+figure; 
+subplot(2,1,1);
 plot(t, ModulatedSCSig);
-K = real(fftshift(fft(ModulatedSCSig)));
-subplot(2,1,2); plot(Fs1, K);
+title('DSB-SC Time Domain')
+subplot(2,1,2); 
+plot(Fs1, real(fftshift(fft(ModulatedSCSig))));
+title('DSB-SC Frequency Domain')
 
 % DSB-TC
 
-message = message + (max(message) * 2);
-ModulatedTCSig = message .* transpose(C);
+ModulatedTCSig = dsbTCMod(message, Fc, t);
 
 figure;
 subplot(2, 1, 1);
@@ -61,7 +66,9 @@ plot(Fs1, real(fftshift(fft(ModulatedTCSig))));
 title('DSB-TC Frequency Domain');
 
 envelopeTC = abs(hilbert(ModulatedTCSig));
+audiowrite('envelopeTC.wav', envelopeTC, Fs);
 envelopeSC = abs(hilbert(ModulatedSCSig));
+audiowrite('envelopeSC.wav', envelopeSC, Fs);
 
 figure;
 subplot(2, 1, 1);

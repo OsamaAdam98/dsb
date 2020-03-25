@@ -1,2 +1,3 @@
-filteredSig.wav
 *.asv
+*.wav
+!eric.wav
