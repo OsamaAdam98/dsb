@@ -87,9 +87,25 @@ title('Suppressed Carrier Envelope Spectrum');
 
 coherentSC = coherentDetector(modulatedSCSig, Fc, t);
 audiowrite('coherentSC.wav', coherentSC, Fs);
+coherentTC = coherentDetector(modulatedTCSig, Fc, t);
+audiowrite('coherentSC.wav', coherentTC, Fs);
 
 figure;
+subplot(2, 1, 1);
+plot(t, coherentTC);
+title('Transmitted Carrier Coherent')
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(coherentTC))));
+title('Transmitted Carrier Coherent Spectrum');
+
+figure;
+subplot(2, 1, 1);
+plot(t, coherentSC);
+title('Suppressed Carrier Coherent')
+subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(coherentSC))));
+title('Suppressed Carrier Coherent Spectrum');
+
 
 
 
