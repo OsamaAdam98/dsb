@@ -2,12 +2,12 @@ clc;
 clear;
 
 [audio, Fs] = audioread('eric.wav');
-s = length(audio)/Fs;
+s = length(audio)/Fs; 
 t = linspace(0, s, s*Fs+1);
 Fs1 = linspace(-Fs/2, Fs/2, s*Fs+1);
 
 d = designfilt('lowpassfir', 'FilterOrder', 8000, 'CutoffFrequency', 4000, 'SampleRate', Fs);
-filteredSig = filter(d, audio);
+filteredSig = filter(d, audio); % Low pass filter
 Y = fft(filteredSig);
 
 audiowrite('filteredSig.wav', filteredSig, Fs);
@@ -29,10 +29,10 @@ title('After Filter');
 
 % filteredSig = real(ifft(filteredSig));
 
-mse = immse(filteredSig, audio);
+mse = immse(filteredSig, audio); % Mean-Square Error
 
 Fc = 100e3;
-message = resample(filteredSig, 5 * Fc, Fs);
+message = resample(filteredSig, 5 * Fc, Fs); % Upsampling signal to 5 * Fc
 Fs = 5*Fc;
 s = length(message)/Fs;
 t = linspace(0, s, s*Fs);
@@ -42,7 +42,7 @@ audiowrite('message.wav', message, Fs);
 
 % DSB-SC
 
-modulatedSCSig = dsbSCMod(message, Fc, t);
+modulatedSCSig = dsbSCMod(message, Fc, t); % DSC-SC Modulation
 
 figure; 
 subplot(2,1,1);
@@ -54,7 +54,7 @@ title('DSB-SC Frequency Domain')
 
 % DSB-TC
 
-modulatedTCSig = dsbTCMod(message, Fc, t);
+modulatedTCSig = dsbTCMod(message, Fc, t); % DSC-TC Modulation
 
 figure;
 subplot(2, 1, 1);
@@ -64,9 +64,10 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(modulatedTCSig))));
 title('DSB-TC Frequency Domain');
 
-envelopeTC = abs(hilbert(modulatedTCSig));
+envelopeTC = abs(hilbert(modulatedTCSig)); % DSB-TC envelope detection
 audiowrite('envelopeTC.wav', envelopeTC, Fs);
-envelopeSC = abs(hilbert(modulatedSCSig));
+
+envelopeSC = abs(hilbert(modulatedSCSig)); % DSB-SC envelope detection
 audiowrite('envelopeSC.wav', envelopeSC, Fs);
 
 figure;
@@ -85,9 +86,9 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(envelopeSC))));
 title('Suppressed Carrier Envelope Spectrum');
 
-coherentSC = coherentDetector(modulatedSCSig, Fc, t);
+coherentSC = coherentDetector(modulatedSCSig, Fc, t); % DSB-SC coherent det
 audiowrite('coherentSC.wav', coherentSC, Fs);
-coherentTC = coherentDetector(modulatedTCSig, Fc, t);
+coherentTC = coherentDetector(modulatedTCSig, Fc, t); % DSB-TC coherent det
 audiowrite('coherentSC.wav', coherentTC, Fs);
 
 figure;
