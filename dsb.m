@@ -6,11 +6,11 @@ s = length(audio)/Fs;
 t = linspace(0, s, s*Fs+1);
 Fs1 = linspace(-Fs/2, Fs/2, s*Fs+1);
 
-d = designfilt('lowpassfir', 'Filterorder', 8000, 'CutoffFrequency', 4000, 'SampleRate', Fs);
-% filteredSig = filtfilt(d, audio);
+d = designfilt('lowpassfir', 'FilterOrder', 8000, 'CutoffFrequency', 4000, 'SampleRate', Fs);
 filteredSig = filter(d, audio);
 Y = fft(filteredSig);
-% sound(filteredSig, Fs);
+
+audiowrite('filteredSig.wav', filteredSig, Fs);
 
 figure;subplot(2, 1, 1)
 plot(t, audio);
@@ -27,7 +27,6 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(Y)));
 title('After Filter');
 
-% audiowrite('filteredSig.wav', real(ifft(filteredSig)), Fs);
 % filteredSig = real(ifft(filteredSig));
 
 mse = immse(filteredSig, audio);
@@ -43,31 +42,31 @@ audiowrite('message.wav', message, Fs);
 
 % DSB-SC
 
-ModulatedSCSig = dsbSCMod(message, Fc, t);
+modulatedSCSig = dsbSCMod(message, Fc, t);
 
 figure; 
 subplot(2,1,1);
-plot(t, ModulatedSCSig);
+plot(t, modulatedSCSig);
 title('DSB-SC Time Domain')
 subplot(2,1,2); 
-plot(Fs1, real(fftshift(fft(ModulatedSCSig))));
+plot(Fs1, real(fftshift(fft(modulatedSCSig))));
 title('DSB-SC Frequency Domain')
 
 % DSB-TC
 
-ModulatedTCSig = dsbTCMod(message, Fc, t);
+modulatedTCSig = dsbTCMod(message, Fc, t);
 
 figure;
 subplot(2, 1, 1);
-plot(t, ModulatedTCSig);
+plot(t, modulatedTCSig);
 title('DSB-TC Time Domain');
 subplot(2, 1, 2);
-plot(Fs1, real(fftshift(fft(ModulatedTCSig))));
+plot(Fs1, real(fftshift(fft(modulatedTCSig))));
 title('DSB-TC Frequency Domain');
 
-envelopeTC = abs(hilbert(ModulatedTCSig));
+envelopeTC = abs(hilbert(modulatedTCSig));
 audiowrite('envelopeTC.wav', envelopeTC, Fs);
-envelopeSC = abs(hilbert(ModulatedSCSig));
+envelopeSC = abs(hilbert(modulatedSCSig));
 audiowrite('envelopeSC.wav', envelopeSC, Fs);
 
 figure;
@@ -86,6 +85,11 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(envelopeSC))));
 title('Suppressed Carrier Envelope Spectrum');
 
+coherentSC = coherentDetector(modulatedSCSig, Fs, t);
+audiowrite('coherentSC.wav', coherentSC, Fs);
+
+figure;
+plot(Fs1, real(fftshift(fft(coherentSC))));
 
 
 
