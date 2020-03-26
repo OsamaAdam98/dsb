@@ -64,6 +64,8 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(modulatedTCSig))));
 title('DSB-TC Frequency Domain');
 
+% Envelope Detection
+
 envelopeTC = abs(hilbert(modulatedTCSig)); % DSB-TC envelope detection
 audiowrite('envelopeTC.wav', envelopeTC, Fs);
 
@@ -86,6 +88,28 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(envelopeSC))));
 title('Suppressed Carrier Envelope Spectrum');
 
+envelopeTC10SNR = awgn(envelopeTC, 10);
+
+figure;
+subplot(2, 1, 1);
+plot(t, envelopeTC10SNR);
+title('Transmitted Carrier Envelope 10 SNR');
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(envelopeTC10SNR))));
+title('Transmitted Carrier Envelope Spectrum 10 SNR');
+
+envelopeTC30SNR = awgn(envelopeTC, 10);
+
+figure;
+subplot(2, 1, 1);
+plot(t, envelopeTC30SNR);
+title('Transmitted Carrier Envelope 30 SNR');
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(envelopeTC30SNR))));
+title('Transmitted Carrier Envelope Spectrum 30 SNR');
+
+% Coherent Detection
+
 coherentSC = coherentDetector(modulatedSCSig, Fc, t); % DSB-SC coherent det
 audiowrite('coherentSC.wav', coherentSC, Fs);
 coherentTC = coherentDetector(modulatedTCSig, Fc, t); % DSB-TC coherent det
@@ -107,6 +131,36 @@ subplot(2, 1, 2);
 plot(Fs1, real(fftshift(fft(coherentSC))));
 title('Suppressed Carrier Coherent Spectrum');
 
+coherentSC10SNR = awgn(coherentSC, 10);
+
+figure;
+subplot(2, 1, 1);
+plot(t, coherentSC10SNR);
+title('Suppressed Carrier Coherent 10 SNR')
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(coherentSC10SNR))));
+title('Suppressed Carrier Coherent Spectrum 10 SNR');
+
+
+coherentSC30SNR = awgn(coherentSC, 30);
+
+figure;
+subplot(2, 1, 1);
+plot(t, coherentSC30SNR);
+title('Suppressed Carrier Coherent 30 SNR')
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(coherentSC30SNR))));
+title('Suppressed Carrier Coherent Spectrum 30 SNR');
+
+corruptedSC = coherentDetector(modulatedSCSig, 100.1e3, t); % DSB-SC coherent det
+
+figure;
+subplot(2, 1, 1);
+plot(t, corruptedSC);
+title('Suppressed Carrier Coherent 100.1KHz')
+subplot(2, 1, 2);
+plot(Fs1, real(fftshift(fft(corruptedSC))));
+title('Suppressed Carrier Coherent Spectrum 100.1KHz');
 
 
 
